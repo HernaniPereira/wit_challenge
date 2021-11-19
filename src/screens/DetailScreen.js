@@ -10,27 +10,30 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import useCityData from "../hooks/useCityDetails";
 import HourlyItem from "../components/HourlyItem";
-import { cities } from "../data";
 import Moment from "moment";
 import DayInfo from "../components/DayInfo";
+import LottieView from "lottie-react-native";
 
 const DetailScreen = ({ route, navigation }) => {
   const { info } = route.params;
+  console.log(info);
   const { data, loading, error } = useCityData(info);
   var date = new Date();
   const formated_date = Moment(date).format("D MMM YYYY");
   if (loading) {
-    return <Text>loading</Text>;
+    return (
+      <LottieView
+        source={require("../assets/weather_clouds.json")}
+        autoPlay
+        loop
+      />
+    );
   }
 
   const currentWeather = data.current.weather[0];
-  /*  var sunrise_dt = new Date(data.current.sunrise * 1000);
-  var sunrise_hour = "0" + sunrise_dt.getHours();
-  var sunrise_min = "0" + sunrise_dt.getMinutes();
-  const sunrise = sunrise_hour + ":" + sunrise_min.substr(-2); */
 
   const getHour = (unix_timestamp) => {
     var hour_min = new Date(unix_timestamp * 1000);
@@ -46,8 +49,6 @@ const DetailScreen = ({ route, navigation }) => {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-
-        justifyContent: "flex-end",
         backgroundColor: "#808080",
       }}
     >
@@ -57,31 +58,13 @@ const DetailScreen = ({ route, navigation }) => {
         resizeMode="cover"
         source={require("../assets/day.jpg")}
       >
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            flex: 1,
-          }}
-        >
+        <View style={styles.mainContainer}>
           {/* HEADER */}
-          <View
-            style={{
-              margin: 16,
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
+          <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="leftcircle" size={30} color="#ffffff85" />
             </TouchableOpacity>
-            <Text
-              style={{ marginStart: 16, fontSize: 20, alignItems: "center" }}
-            >
-              {data.name}
-            </Text>
+            <Text style={styles.headerText}>{info.name}</Text>
           </View>
           {/* BODY */}
           <View style={{ marginStart: 16, fontSize: 30, alignItems: "center" }}>
@@ -177,5 +160,22 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 20,
     elevation: 2,
     backgroundColor: "#2f2f2fc2",
+  },
+  headerContainer: {
+    margin: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+  },
+  headerText: {
+    marginStart: 16,
+    fontSize: 20,
+    alignItems: "center",
+  },
+  mainContainer: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    flex: 1,
   },
 });
