@@ -115,7 +115,7 @@ const HomeScreen = ({ navigation }) => {
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Detail", { data: item })}
+                  onPress={() => navigation.navigate("Detail", { info: item })}
                 >
                   <CityItem data={item} />
                 </TouchableOpacity>
